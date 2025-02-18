@@ -32,20 +32,25 @@ We use **RANK()** and **SUM() OVER()** to analyze cumulative trends and ranking 
 
 Example (Top 3 pizza types by revenue in each category):
 ```sql
-SELECT category, name AS pizza_name, revenue, rank_num
+SELECT name, revenue 
 FROM (
-    SELECT
-        pizza_types.category,
-        pizza_types.name,
-        SUM(order_details.quantity * pizzas.price) AS revenue,
-        RANK() OVER (PARTITION BY pizza_types.category ORDER BY SUM(order_details.quantity * pizzas.price) DESC) AS rank_num
-    FROM pizza_types
-    JOIN pizzas ON pizzas.pizza_type_id = pizza_types.pizza_type_id
-    JOIN order_details ON order_details.pizza_id = pizzas.pizza_id
-    GROUP BY pizza_types.category, pizza_types.name
-) AS ranked_pizzas
-WHERE rank_num <= 3
-ORDER BY category, rank_num;
+    SELECT 
+        category, 
+        name, 
+        revenue,
+        RANK() OVER (PARTITION BY category ORDER BY revenue DESC) AS rank_of_pizzatypes 
+    FROM (
+        SELECT 
+            pizza_types.name, 
+            pizza_types.category, 
+            SUM(order_details.quantity * pizzas.price) AS revenue 
+        FROM pizza_types 
+        JOIN pizzas ON pizzas.pizza_type_id = pizza_types.pizza_type_id 
+        JOIN order_details ON order_details.pizza_id = pizzas.pizza_id
+        GROUP BY pizza_types.name, pizza_types.category 
+    ) AS A
+) AS B
+WHERE rank_of_pizzatypes <= 3;
 ```
 
 **3️⃣ Subqueries**
@@ -57,7 +62,6 @@ SELECT pizza_id, price
 FROM pizzas
 WHERE price = (SELECT MAX(price) FROM pizzas);
 ```
-
 ---
 
 📊 Key Insights Extracted
