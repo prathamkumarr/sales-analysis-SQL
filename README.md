@@ -1,4 +1,4 @@
-# Sales Analysis Using SQL
+Sales Analysis Using SQL
 
 📌 Project Overview
 This project focuses on analyzing pizza sales data using **SQL**. We explore sales trends, revenue generation, and order patterns using **Joins, Window Functions, and Subqueries**. The goal is to extract meaningful insights from the dataset by performing advanced SQL operations.
